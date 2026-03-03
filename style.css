@@ -140,6 +140,16 @@ section {
     z-index: 20;
 }
 
+.testimonials, .partners-compact{
+    display: none;
+}
+
+.legal{
+    display: none;
+}
+ .footer-socials .social-link{
+    display: none;
+} 
 /* Mobile Fixes for Background Scaling */
 @media (max-width: 1024px) {
 
