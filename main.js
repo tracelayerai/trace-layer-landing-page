@@ -161,14 +161,15 @@ document.addEventListener('DOMContentLoaded', () => {
         form.addEventListener("submit", function (e) {
             e.preventDefault();
 
+            const formData = new FormData(form);
             const templateParams = {
-                from_name:        form.querySelector('input[placeholder="Jane Smith"]')?.value || "",
-                from_email:       form.querySelector('input[type="email"]')?.value || "",
-                company:          form.querySelector('input[placeholder="Acme Corp"]')?.value || "",
-                role:             form.querySelector('input[placeholder="Head of Compliance"]')?.value || "",
-                institution_type: form.querySelectorAll("select")[0]?.value || "",
-                use_case:         form.querySelectorAll("select")[1]?.value || "",
-                message:          form.querySelector("textarea")?.value || "(no message)",
+                from_name:        formData.get("from_name")?.toString().trim() || "",
+                from_email:       formData.get("from_email")?.toString().trim() || "",
+                company:          formData.get("company")?.toString().trim() || "",
+                role:             formData.get("role")?.toString().trim() || "",
+                institution_type: formData.get("institution_type")?.toString() || "",
+                use_case:         formData.get("use_case")?.toString() || "",
+                message:          formData.get("message")?.toString().trim() || "(no message)",
             };
 
             submitBtn.textContent = "Sending...";
