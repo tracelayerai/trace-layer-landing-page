@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let isHeaderScrolled = false;
 
     // 1. Throttled Scroll Management
-    // Using a simple flag + requestAnimationFrame is the "senior" way to handle high-frequency events
     const handleScroll = () => {
         const scrolled = window.scrollY > scrollThreshold;
         if (scrolled !== isHeaderScrolled) {
@@ -74,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         modalOverlay.classList.add('active');
         body.style.overflow = 'hidden';
-        // Accessibility focus trap logic could go here
     };
 
     const closeModal = () => {
@@ -111,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const pages = Math.ceil(total / perPage);
         let current = 0;
 
-        // Reset state
         track.style.transform = '';
         cards.forEach(card => card.style.display = '');
 
@@ -154,4 +151,60 @@ document.addEventListener('DOMContentLoaded', () => {
     // Back to top button
     const btt = document.getElementById('backToTop');
     btt?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    //  EmailJS Form Handling 
+  emailjs.init("MbaMISbKohov2T2Fc");
+
+    function handleFormSubmit(form, submitBtn) {
+        const originalText = submitBtn.textContent;
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const templateParams = {
+                from_name:        form.querySelector('input[placeholder="Jane Smith"]')?.value || "",
+                from_email:       form.querySelector('input[type="email"]')?.value || "",
+                company:          form.querySelector('input[placeholder="Acme Corp"]')?.value || "",
+                role:             form.querySelector('input[placeholder="Head of Compliance"]')?.value || "",
+                institution_type: form.querySelectorAll("select")[0]?.value || "",
+                use_case:         form.querySelectorAll("select")[1]?.value || "",
+                message:          form.querySelector("textarea")?.value || "(no message)",
+            };
+
+            submitBtn.textContent = "Sending...";
+            submitBtn.disabled = true;
+
+            emailjs.send("service_c0tpwhk", "template_qz3o3sn", templateParams)
+                .then(function () {
+                    submitBtn.textContent = "✅ Sent Successfully!";
+                    submitBtn.style.background = "#22c55e";
+                    form.reset();
+                    setTimeout(() => {
+                        submitBtn.textContent = originalText;
+                        submitBtn.style.background = "";
+                        submitBtn.disabled = false;
+                    }, 3000);
+                })
+               .catch((error) => {
+                    console.error("EmailJS error:", error);
+                    submitBtn.textContent = "❌ Failed Try Again.";
+                    submitBtn.style.background = "#ef4444";
+                    submitBtn.disabled = false;
+                    setTimeout(() => {
+                        submitBtn.textContent = originalText;
+                        submitBtn.style.background = "";
+                    }, 3000);
+                });
+        });
+    }
+
+
+    // Attach to both modal forms
+    const demoForm  = document.querySelector("#demoContent .institutional-form");
+    const demoBtn   = demoForm?.querySelector(".form-submit");
+    if (demoForm && demoBtn) handleFormSubmit(demoForm, demoBtn);
+
+    const salesForm = document.querySelector("#salesContent .institutional-form");
+    const salesBtn  = salesForm?.querySelector(".form-submit");
+    if (salesForm && salesBtn) handleFormSubmit(salesForm, salesBtn);
 });
